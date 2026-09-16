@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kora — Organiza la vida familiar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap');
+
+  :root{
+    --ink:#2B2420;
+    --ink-soft:#5C5148;
+    --paper:#FCEEDD;
+    --paper-2:#F4F1E6;
+    --coral:#E1512F;
+    --coral-ink:#7A2513;
+    --sage:#9CC69B;
+    --sage-ink:#264B2B;
+    --peri:#B7C9EA;
+    --peri-ink:#233D66;
+    --butter:#FFC93C;
+    --line: rgba(43,36,32,0.14);
+    --radius-card: 18px;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#F4EBDD;
+      --ink-soft:#CFC3B4;
+      --paper:#211C17;
+      --paper-2:#2A2420;
+      --coral:#FF7A54;
+      --coral-ink:#FFE4D9;
+      --sage:#6FA070;
+      --sage-ink:#E4F2E1;
+      --peri:#7C93C4;
+      --peri-ink:#E7EDFB;
+      --butter:#E0B23A;
+      --line: rgba(244,235,221,0.16);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#F4EBDD;
+    --ink-soft:#CFC3B4;
+    --paper:#211C17;
+    --paper-2:#2A2420;
+    --coral:#FF7A54;
+    --coral-ink:#FFE4D9;
+    --sage:#6FA070;
+    --sage-ink:#E4F2E1;
+    --peri:#7C93C4;
+    --peri-ink:#E7EDFB;
+    --butter:#E0B23A;
+    --line: rgba(244,235,221,0.16);
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-font-smoothing:antialiased;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif;
+    line-height:1.45;
+  }
+  img{max-width:100%;display:block;}
+  h1,h2,h3{
+    font-family:'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+    text-wrap:balance;
+    margin:0;
+  }
+  a{color:inherit;}
+  .wrap{max-width:1180px;margin:0 auto;padding-left:24px;padding-right:24px;}
+  @media (max-width:720px){.wrap{padding-left:18px;padding-right:18px;}}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:blur(10px);
+    background:color-mix(in srgb, var(--paper) 78%, transparent);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px; max-width:1180px; margin:0 auto;
+  }
+  .logo{
+    font-family:'Bricolage Grotesque', sans-serif;
+    font-weight:800; font-size:1.5rem; letter-spacing:-0.02em;
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo .dot{width:10px;height:10px;border-radius:3px;background:var(--coral);transform:rotate(45deg);}
+  .navlinks{display:flex; gap:28px; font-size:0.95rem; font-weight:500; color:var(--ink-soft);}
+  .navlinks a{text-decoration:none; transition:color .15s;}
+  .navlinks a:hover{color:var(--ink);}
+  @media (max-width:820px){.navlinks{display:none;}}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    border-radius:999px; font-weight:600; font-size:0.92rem;
+    padding:12px 22px; text-decoration:none; border:1px solid transparent;
+    cursor:pointer; white-space:nowrap;
+  }
+  .btn-ink{background:var(--ink); color:var(--paper);}
+  .btn-ink:hover{opacity:0.88;}
+  .btn-outline{background:transparent; color:var(--ink); border-color:var(--line);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    background:linear-gradient(180deg, var(--paper) 0%, #F3D9BE 100%);
+    padding:64px 0 88px;
+    position:relative; overflow:hidden;
+  }
+  :root[data-theme="dark"] .hero, @media (prefers-color-scheme: dark){}
+  .hero-grid{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center;
+  }
+  @media (max-width:900px){.hero-grid{grid-template-columns:1fr; gap:40px;}}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--paper-2); border:1px solid var(--line);
+    border-radius:999px; padding:6px 14px 6px 8px;
+    font-size:0.82rem; font-weight:600; color:var(--ink-soft);
+    margin-bottom:22px;
+  }
+  .eyebrow .chip{background:var(--coral); color:var(--paper); border-radius:999px; padding:2px 9px; font-size:0.72rem;}
+  .hero h1{
+    font-size:clamp(2.4rem, 5.4vw, 4.1rem);
+    font-weight:800; letter-spacing:-0.02em; line-height:1.02;
+    text-transform:uppercase;
+  }
+  .hero h1 .accent{color:var(--coral);}
+  .hero p.lede{
+    margin-top:22px; font-size:1.15rem; color:var(--ink-soft); max-width:46ch;
+  }
+  .hero-cta{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
+  .hero-cta .btn-butter{background:var(--butter); color:var(--coral-ink); font-weight:700;}
+
+  /* fridge-note collage */
+  .collage{position:relative; height:420px;}
+  @media (max-width:900px){.collage{height:320px;}}
+  .note{
+    position:absolute; background:var(--paper-2);
+    border-radius:var(--radius-card); border:1px solid var(--line);
+    box-shadow:0 14px 30px -14px rgba(43,36,32,0.35);
+    padding:16px; width:200px;
+  }
+  .note .k{font-size:0.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); display:flex; align-items:center; gap:6px; margin-bottom:8px;}
+  .note .k .sq{width:8px;height:8px;border-radius:2px;}
+  .note .line{display:flex; align-items:center; gap:8px; font-size:0.86rem; padding:5px 0; border-bottom:1px dashed var(--line);}
+  .note .line:last-child{border-bottom:none;}
+  .note .box{width:14px;height:14px;border-radius:4px;border:1.6px solid var(--ink-soft); flex:none;}
+  .note .box.done{background:var(--sage); border-color:var(--sage);}
+  .note.n1{top:0; left:6%; transform:rotate(-6deg); background:var(--peri); border-color:transparent;}
+  .note.n2{top:14%; right:2%; transform:rotate(5deg); z-index:3;}
+  .note.n3{bottom:6%; left:20%; transform:rotate(4deg); background:var(--butter); border-color:transparent; z-index:2;}
+  .note.n4{bottom:-2%; right:16%; transform:rotate(-4deg); width:170px;}
+  .pin{position:absolute; width:14px; height:14px; border-radius:50%; background:var(--coral); top:-7px; left:50%; transform:translateX(-50%); box-shadow:0 2px 4px rgba(0,0,0,.25);}
+
+  /* ---------- stat bar ---------- */
+  .stats{background:var(--paper-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .stats-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:0;
+  }
+  @media (max-width:760px){.stats-grid{grid-template-columns:1fr; }}
+  .stat{
+    padding:44px 24px; text-align:left; border-left:1px solid var(--line);
+  }
+  .stat:first-child{border-left:none;}
+  @media (max-width:760px){.stat{border-left:none; border-top:1px solid var(--line);} .stat:first-child{border-top:none;}}
+  .stat .num{
+    font-family:'Bricolage Grotesque', sans-serif; font-weight:800; font-size:clamp(2.2rem,4vw,3.1rem);
+    font-variant-numeric:tabular-nums; letter-spacing:-0.02em; color:var(--coral);
+  }
+  .stat .label{margin-top:6px; color:var(--ink-soft); font-size:0.96rem; max-width:32ch;}
+
+  /* ---------- section shells ---------- */
+  section.block{padding:96px 0;}
+  @media (max-width:720px){section.block{padding:64px 0;}}
+  .block-sage{background:var(--sage); color:var(--sage-ink);}
+  .block-peri{background:var(--peri); color:var(--peri-ink);}
+  .block-paper2{background:var(--paper-2);}
+
+  .kicker{
+    font-size:0.82rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    opacity:0.72; margin-bottom:14px;
+  }
+  .section-head{max-width:640px; margin-bottom:52px;}
+  .section-head h2{font-size:clamp(1.9rem,3.4vw,2.7rem); font-weight:800; letter-spacing:-0.015em;}
+  .section-head p{margin-top:14px; font-size:1.08rem; opacity:0.82; max-width:54ch;}
+
+  /* how it works steps */
+  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  @media (max-width:900px){.steps{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.steps{grid-template-columns:1fr;}}
+  .step{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-card); padding:26px 22px;}
+  .step .n{font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:1.6rem; color:var(--coral); margin-bottom:14px;}
+  .step h3{font-size:1.05rem; font-weight:700; margin-bottom:8px;}
+  .step p{margin:0; font-size:0.92rem; color:var(--ink-soft);}
+
+  /* mission */
+  .mission{display:grid; grid-template-columns:0.9fr 1.1fr; gap:56px; align-items:center;}
+  @media (max-width:900px){.mission{grid-template-columns:1fr;}}
+  .mission h2{font-size:clamp(1.9rem,3.6vw,2.6rem); font-weight:800;}
+  .mission p{margin-top:18px; font-size:1.08rem; max-width:52ch;}
+  .mission-figure{
+    background:rgba(0,0,0,0.06); border-radius:24px; padding:28px; display:grid; gap:12px;
+  }
+  :root[data-theme="dark"] .mission-figure{background:rgba(255,255,255,0.06);}
+  .week{display:grid; grid-template-columns:repeat(7,1fr); gap:8px;}
+  .week .d{font-size:0.68rem; text-align:center; opacity:0.7; font-weight:700;}
+  .week .cell{aspect-ratio:1; border-radius:8px; background:rgba(0,0,0,0.08);}
+  :root[data-theme="dark"] .week .cell{background:rgba(255,255,255,0.1);}
+  .week .cell.on{background:var(--coral);}
+
+  /* feature grid */
+  .features{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  @media (max-width:900px){.features{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:600px){.features{grid-template-columns:1fr;}}
+  .feature{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-card);
+    padding:28px 24px;
+  }
+  .feature .ic{
+    width:44px;height:44px;border-radius:12px; display:flex; align-items:center; justify-content:center;
+    margin-bottom:18px; font-size:1.3rem;
+  }
+  .feature h3{font-size:1.12rem; font-weight:700; margin-bottom:10px;}
+  .feature p{margin:0; color:var(--ink-soft); font-size:0.95rem;}
+
+  /* before / after */
+  .compare{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:760px){.compare{grid-template-columns:1fr;}}
+  .compare .col{border-radius:var(--radius-card); padding:30px 26px; border:1px solid var(--line);}
+  .compare .col.before{background:var(--paper-2);}
+  .compare .col.after{background:var(--paper); border-color:var(--coral);}
+  .compare .tag{font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:16px; display:inline-block;}
+  .compare .before .tag{color:var(--ink-soft);}
+  .compare .after .tag{color:var(--coral);}
+  .compare li{padding:8px 0; border-bottom:1px dashed var(--line); font-size:0.96rem;}
+  .compare li:last-child{border-bottom:none;}
+  .compare ul{list-style:none; margin:0; padding:0;}
+
+  /* final cta */
+  .cta-final{
+    background:var(--ink); color:var(--paper); text-align:center; padding:96px 24px; border-radius:32px;
+    margin:0 24px 96px; max-width:1132px; margin-left:auto; margin-right:auto;
+  }
+  .cta-final h2{font-size:clamp(2rem,4vw,3rem); font-weight:800; max-width:20ch; margin:0 auto;}
+  .cta-final p{margin-top:16px; opacity:0.75; font-size:1.05rem;}
+  .cta-row{display:flex; gap:14px; justify-content:center; margin-top:34px; flex-wrap:wrap;}
+  .store-badge{
+    display:flex; align-items:center; gap:10px; border:1px solid rgba(252,238,221,0.28);
+    border-radius:12px; padding:10px 18px; font-size:0.86rem; text-decoration:none; color:var(--paper);
+  }
+  .store-badge .g{font-size:1.1rem;}
+  .store-badge small{display:block; opacity:0.6; font-size:0.66rem;}
+  .store-badge strong{font-size:0.92rem;}
+
+  footer{padding:40px 24px 56px; font-size:0.86rem; color:var(--ink-soft);}
+  .foot-row{display:flex; justify-content:space-between; align-items:center; max-width:1180px; margin:0 auto; flex-wrap:wrap; gap:16px;}
+  .foot-links{display:flex; gap:22px; flex-wrap:wrap;}
+  .foot-links a{text-decoration:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo"><span class="dot"></span>Kora</div>
+    <nav class="navlinks">
+      <a href="#producto">Producto</a>
+      <a href="#funciona">Cómo funciona</a>
+      <a href="#familias">Para familias</a>
+      <a href="#precios">Precios</a>
+    </nav>
+    <a class="btn btn-ink" href="#cta">Prueba Kora gratis</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow"><span class="chip">Nuevo</span> Ya disponible en iOS y Android</span>
+      <h1>Nunca habías estado tan cerca de <span class="accent">ordenar el caos</span> de tu familia</h1>
+      <p class="lede">Calendario, tareas, compras y comidas en un solo sitio. Kora reparte lo que hay que hacer entre toda la casa, para que nada dependa de una sola memoria.</p>
+      <div class="hero-cta">
+        <a class="btn btn-butter" href="#cta">Empezar gratis</a>
+        <a class="btn btn-outline" href="#funciona">Ver cómo funciona ↓</a>
+      </div>
+    </div>
+    <div class="collage" aria-hidden="true">
+      <div class="note n1">
+        <div class="k"><span class="sq" style="background:var(--peri-ink)"></span>Calendario · lun</div>
+        <div class="line">🥕 Compra semanal — 10:00</div>
+        <div class="line">⚽ Fútbol de Mateo — 17:30</div>
+        <div class="line">🦷 Dentista Lucía — 19:00</div>
+      </div>
+      <div class="note n2">
+        <div class="pin"></div>
+        <div class="k"><span class="sq" style="background:var(--coral)"></span>Tareas de hoy</div>
+        <div class="line"><span class="box done"></span> Sacar la basura</div>
+        <div class="line"><span class="box"></span> Preparar mochilas</div>
+        <div class="line"><span class="box"></span> Regar las plantas</div>
+      </div>
+      <div class="note n3">
+        <div class="k"><span class="sq" style="background:var(--coral-ink)"></span>Compra</div>
+        <div class="line"><span class="box done"></span> Leche y huevos</div>
+        <div class="line"><span class="box"></span> Pasta y arroz</div>
+      </div>
+      <div class="note n4">
+        <div class="k"><span class="sq" style="background:var(--sage-ink)"></span>Cena de hoy</div>
+        <div class="line">🍝 Pasta al pesto</div>
+        <div class="line">👩‍🍳 Le toca a papá</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat">
+      <div class="num">4,2 h</div>
+      <div class="label">ahorradas a la semana por familia en llamadas, mensajes y recordatorios de última hora.</div>
+    </div>
+    <div class="stat">
+      <div class="num">89%</div>
+      <div class="label">de las familias dicen olvidar menos tareas del hogar tras un mes usando Kora.</div>
+    </div>
+    <div class="stat">
+      <div class="num">3–6</div>
+      <div class="label">miembros por familia coordinados en la misma app, niños incluidos.</div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="funciona">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Cómo funciona</div>
+      <h2>De la nevera llena de post-its a un solo lugar.</h2>
+      <p>Kora sustituye el mural de notas, los grupos de chat cruzados y el "¿me lo habías dicho?" por cuatro piezas que encajan entre sí.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="n">01</div>
+        <h3>Calendario compartido</h3>
+        <p>Cole, extraescolares, médico y turnos de casa, visibles para toda la familia al mismo tiempo.</p>
+      </div>
+      <div class="step">
+        <div class="n">02</div>
+        <h3>Tareas repartidas</h3>
+        <p>Cada tarea tiene un nombre al lado. Se asignan, se marcan hechas y nadie carga con todo.</p>
+      </div>
+      <div class="step">
+        <div class="n">03</div>
+        <h3>Lista de la compra</h3>
+        <p>Se añade desde cualquier móvil según hace falta, y se compra una sola vez, sin duplicados.</p>
+      </div>
+      <div class="step">
+        <div class="n">04</div>
+        <h3>Plan de comidas</h3>
+        <p>La semana de menús se decide una vez y alimenta sola la lista de la compra.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block block-sage" id="producto">
+  <div class="wrap mission">
+    <div>
+      <div class="kicker">Somos Kora</div>
+      <h2>Creemos que organizar una casa no debería ser el trabajo silencioso de una sola persona.</h2>
+      <p>Diseñamos Kora para familias con niños que quieren recuperar tiempo y reducir la carga mental de recordarlo todo. Ni tableros complicados ni apps de empresa disfrazadas de app familiar: solo lo que una casa usa cada día.</p>
+    </div>
+    <div class="mission-figure">
+      <div class="week">
+        <div class="d">L</div><div class="d">M</div><div class="d">X</div><div class="d">J</div><div class="d">V</div><div class="d">S</div><div class="d">D</div>
+        <div class="cell on"></div><div class="cell"></div><div class="cell on"></div><div class="cell"></div><div class="cell on"></div><div class="cell on"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell on"></div><div class="cell"></div><div class="cell on"></div><div class="cell"></div><div class="cell on"></div><div class="cell on"></div>
+        <div class="cell on"></div><div class="cell"></div><div class="cell on"></div><div class="cell"></div><div class="cell on"></div><div class="cell"></div><div class="cell on"></div>
+      </div>
+      <p style="margin:0; font-size:0.86rem; opacity:0.75;">Semana tipo de una familia Kora: días con tareas asignadas y comidas planificadas.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="familias">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Todo en una app</div>
+      <h2>Cuatro rutinas de casa, una sola pantalla.</h2>
+      <p>Nada de módulos sueltos: el calendario alimenta las tareas, las tareas alimentan la compra, y la compra sale del menú de la semana.</p>
+    </div>
+    <div class="features">
+      <div class="feature">
+        <div class="ic" style="background:var(--peri); color:var(--peri-ink);">📅</div>
+        <h3>Calendario familiar</h3>
+        <p>Un calendario por casa, con colores por persona, para ver de un vistazo quién tiene qué y cuándo.</p>
+      </div>
+      <div class="feature">
+        <div class="ic" style="background:var(--butter); color:var(--coral-ink);">✅</div>
+        <h3>Tareas asignadas</h3>
+        <p>Cada tarea del hogar tiene un responsable y una fecha, de la colada a sacar al perro.</p>
+      </div>
+      <div class="feature">
+        <div class="ic" style="background:var(--sage); color:var(--sage-ink);">🛒</div>
+        <h3>Lista de la compra</h3>
+        <p>Se edita en tiempo real desde el súper, la cocina o el coche. Sin fotos de post-its.</p>
+      </div>
+      <div class="feature">
+        <div class="ic" style="background:var(--coral); color:var(--paper);">🍽️</div>
+        <h3>Plan de comidas</h3>
+        <p>Organiza la semana de menús y convierte cada plato en ingredientes de la lista de la compra.</p>
+      </div>
+      <div class="feature">
+        <div class="ic" style="background:var(--ink); color:var(--paper);">👨‍👩‍👧‍👦</div>
+        <h3>Perfiles para toda la casa</h3>
+        <p>Desde los peques hasta los abuelos: cada miembro ve lo suyo y lo del resto de la familia.</p>
+      </div>
+      <div class="feature">
+        <div class="ic" style="background:var(--peri); color:var(--peri-ink);">🔔</div>
+        <h3>Recordatorios que llegan a tiempo</h3>
+        <p>Un aviso antes de salir de casa, no una discusión después de haber llegado tarde.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block block-peri">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Antes / después</div>
+      <h2>La misma familia, sin el ruido de fondo.</h2>
+    </div>
+    <div class="compare">
+      <div class="col before">
+        <span class="tag">Sin Kora</span>
+        <ul>
+          <li>Tres grupos de chat distintos para cuadrar un solo plan.</li>
+          <li>La compra se hace dos veces porque nadie vio la nota de la nevera.</li>
+          <li>Una sola persona sabe dónde toca ir cada tarde.</li>
+          <li>El menú de la semana se decide a las 19:00, con hambre.</li>
+        </ul>
+      </div>
+      <div class="col after">
+        <span class="tag">Con Kora</span>
+        <ul>
+          <li>Un calendario, visible para toda la casa, niños incluidos.</li>
+          <li>La lista de la compra se actualiza sola y se compra una vez.</li>
+          <li>Cada tarea tiene un nombre al lado, no un "ya lo hago yo".</li>
+          <li>El menú se planifica el domingo y arrastra la compra sin pensar.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block block-paper2" id="precios">
+  <div class="wrap" style="text-align:center;">
+    <div class="kicker" style="justify-content:center; display:flex;">Para quién es Kora</div>
+    <h2 style="font-size:clamp(1.8rem,3.2vw,2.4rem); font-weight:800; max-width:34ch; margin:0 auto;">Pensada para familias con niños que quieren ganar tiempo, no otra app más que gestionar.</h2>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="cta-final">
+    <h2>Empieza a organizar tu familia hoy</h2>
+    <p>Gratis para empezar. Sin tarjeta. Toda la familia en cinco minutos.</p>
+    <div class="cta-row">
+      <a class="store-badge" href="#">
+        <span class="g"></span>
+        <span><small>Descárgala en</small><strong>App Store</strong></span>
+      </a>
+      <a class="store-badge" href="#">
+        <span class="g">▶</span>
+        <span><small>Disponible en</small><strong>Google Play</strong></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-row">
+    <div class="logo"><span class="dot"></span>Kora</div>
+    <div class="foot-links">
+      <a href="#producto">Producto</a>
+      <a href="#familias">Para familias</a>
+      <a href="#precios">Precios</a>
+      <a href="#">Privacidad</a>
+    </div>
+    <div>© 2026 Kora</div>
+  </div>
+</footer>
+
+</body>
+</html>
