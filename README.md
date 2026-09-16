@@ -1,1 +1,6 @@
 Kora: Organiza la vida familiar en un solo lugar: calendario, tareas, compras y comidas. Coordina a toda la familia y simplifica el día a día. Para familias que necesiten planifica mejor sus días. El producto es Una app para organizar la vida familiar en un solo lugar: calendarios compartidos, tareas, compras y planificación de comidas. Permite repartir responsabilidades, coordinar horarios y saber qué tiene que hacer cada miembro de la familia. Pensada para familias con niños que quieren ahorrar tiempo, reducir olvidos y simplificar el día a día.
+
+Primera reacción:
+- Esta buena la idea
+- No entendio como funcionarían las tareas
+- Pregunto si uno puede cargar tareas y cualquiera que la complete la marca como hecha
