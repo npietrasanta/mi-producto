@@ -264,6 +264,32 @@
   .compare li:last-child{border-bottom:none;}
   .compare ul{list-style:none; margin:0; padding:0;}
 
+  /* forms */
+  .form-row{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:34px;}
+  .form-row input[type=email]{
+    flex:1; min-width:220px; max-width:320px;
+    border-radius:999px; border:1px solid var(--line); background:var(--paper);
+    color:var(--ink); padding:12px 20px; font-size:0.95rem; font-family:inherit;
+  }
+  .form-row input[type=email]::placeholder{color:var(--ink-soft);}
+  .form-msg{margin-top:14px; font-size:0.9rem; min-height:1.3em;}
+  .form-msg.ok{color:var(--sage);}
+  .form-msg.err{color:var(--coral);}
+  .feedback-form{max-width:560px; margin:0 auto; display:grid; gap:14px;}
+  .feedback-form textarea{
+    border-radius:16px; border:1px solid var(--line); background:var(--paper);
+    color:var(--ink); padding:16px 18px; font-size:0.98rem; font-family:inherit;
+    min-height:120px; resize:vertical;
+  }
+  .feedback-form input[type=email]{
+    border-radius:999px; border:1px solid var(--line); background:var(--paper);
+    color:var(--ink); padding:12px 20px; font-size:0.95rem; font-family:inherit;
+  }
+  .feedback-form button{justify-self:center;}
+  .form-row input:focus, .feedback-form input:focus, .feedback-form textarea:focus{
+    outline:2px solid var(--coral); outline-offset:2px;
+  }
+
   /* final cta */
   .cta-final{
     background:var(--ink); color:var(--paper); text-align:center; padding:96px 24px; border-radius:32px;
@@ -494,20 +520,31 @@
   </div>
 </section>
 
+<section class="block" id="feedback">
+  <div class="wrap" style="text-align:center;">
+    <div class="section-head" style="margin-left:auto; margin-right:auto; text-align:center;">
+      <div class="kicker" style="justify-content:center; display:flex;">Tu opinión</div>
+      <h2>¿Qué te parece Kora?</h2>
+      <p style="margin-left:auto; margin-right:auto;">Estamos construyendo esto para familias reales. Contanos qué te gustaría ver, qué te confunde o qué te haría usarla.</p>
+    </div>
+    <form id="feedback-form" class="feedback-form" novalidate>
+      <textarea name="comment" required placeholder="Tu comentario..." aria-label="Tu comentario"></textarea>
+      <input type="email" name="email" placeholder="tu@email.com (opcional)" aria-label="Tu email (opcional)">
+      <button type="submit" class="btn btn-ink">Enviar comentario</button>
+    </form>
+    <p class="form-msg" id="feedback-msg" role="status" aria-live="polite"></p>
+  </div>
+</section>
+
 <section id="cta">
   <div class="cta-final">
     <h2>Empieza a organizar tu familia hoy</h2>
     <p>Gratis para empezar. Sin tarjeta. Toda la familia en cinco minutos.</p>
-    <div class="cta-row">
-      <a class="store-badge" href="#">
-        <span class="g"></span>
-        <span><small>Descárgala en</small><strong>App Store</strong></span>
-      </a>
-      <a class="store-badge" href="#">
-        <span class="g">▶</span>
-        <span><small>Disponible en</small><strong>Google Play</strong></span>
-      </a>
-    </div>
+    <form id="waitlist-form" class="form-row" novalidate>
+      <input type="email" name="email" required placeholder="tu@email.com" aria-label="Tu email">
+      <button type="submit" class="btn btn-butter">Unirme a la lista</button>
+    </form>
+    <p class="form-msg" id="waitlist-msg" role="status" aria-live="polite"></p>
   </div>
 </section>
 
@@ -541,6 +578,61 @@
   });
   menu.querySelectorAll('a').forEach(function(a){
     a.addEventListener('click', closeMenu);
+  });
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+(function(){
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function bindForm(formId, msgId, onSubmit){
+    var form = document.getElementById(formId);
+    var msg = document.getElementById(msgId);
+    if(!form) return;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var btn = form.querySelector('button');
+      var originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Enviando…';
+      msg.textContent = '';
+      msg.className = 'form-msg';
+      onSubmit(form)
+        .then(function(){
+          msg.textContent = '¡Gracias! Ya quedó registrado.';
+          msg.className = 'form-msg ok';
+          form.reset();
+        })
+        .catch(function(){
+          msg.textContent = 'Algo salió mal. Probá de nuevo en un momento.';
+          msg.className = 'form-msg err';
+        })
+        .finally(function(){
+          btn.disabled = false;
+          btn.textContent = originalText;
+        });
+    });
+  }
+
+  bindForm('waitlist-form', 'waitlist-msg', function(form){
+    var email = form.email.value.trim();
+    return sb.from('signups')
+      .insert({ email: email })
+      .then(function(res){
+        // 23505 = email duplicado: ya está en la lista, se trata igual que un éxito.
+        if(res.error && res.error.code !== '23505') throw res.error;
+      });
+  });
+
+  bindForm('feedback-form', 'feedback-msg', function(form){
+    var comment = form.comment.value.trim();
+    var email = form.email.value.trim();
+    return sb.from('feedback')
+      .insert({ comment: comment, email: email || null })
+      .then(function(res){ if(res.error) throw res.error; });
   });
 })();
 </script>
