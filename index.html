@@ -157,7 +157,7 @@
     margin-top:22px; font-size:1.15rem; color:var(--ink-soft); max-width:46ch;
   }
   .hero-cta{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
-  .hero-cta .btn-butter{background:var(--butter); color:var(--coral-ink); font-weight:700;}
+  .btn-butter{background:var(--butter); color:var(--coral-ink); font-weight:700;}
 
   /* fridge-note collage */
   .collage{position:relative; height:420px;}
@@ -287,8 +287,28 @@
   }
   .feedback-form button{justify-self:center;}
   .form-row input:focus, .feedback-form input:focus, .feedback-form textarea:focus{
-    outline:2px solid var(--coral); outline-offset:2px;
+    outline:2px solid var(--ink); outline-offset:2px;
   }
+
+  /* modal */
+  dialog.modal{
+    border:none; border-radius:24px; padding:36px 32px;
+    max-width:420px; width:calc(100% - 48px);
+    background:var(--paper); color:var(--ink);
+    box-shadow:0 24px 60px -20px rgba(43,36,32,0.45);
+  }
+  dialog.modal::backdrop{background:rgba(43,36,32,0.55);}
+  dialog.modal h2{font-size:1.5rem; font-weight:800; padding-right:24px;}
+  dialog.modal p{margin-top:10px; color:var(--ink-soft); font-size:0.98rem;}
+  dialog.modal .form-row{justify-content:stretch;}
+  dialog.modal .form-row input[type=email]{max-width:none;}
+  .modal-close{
+    position:absolute; top:18px; right:18px;
+    width:32px; height:32px; border-radius:50%;
+    border:1px solid var(--line); background:transparent; color:var(--ink);
+    font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .modal-close:hover{background:var(--paper-2);}
 
   /* final cta */
   .cta-final{
@@ -323,7 +343,7 @@
       <a href="#familias">Para familias</a>
       <a href="#precios">Precios</a>
     </nav>
-    <a class="btn btn-ink" href="#cta">Prueba Kora gratis</a>
+    <a class="btn btn-ink" href="#" data-open-modal="waitlist">Prueba Kora gratis</a>
     <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Abrir menú">☰</button>
   </div>
   <nav class="mobile-menu" id="mobile-menu">
@@ -331,7 +351,7 @@
     <a href="#funciona">Cómo funciona</a>
     <a href="#familias">Para familias</a>
     <a href="#precios">Precios</a>
-    <a class="btn btn-ink" href="#cta">Prueba Kora gratis</a>
+    <a class="btn btn-ink" href="#" data-open-modal="waitlist">Prueba Kora gratis</a>
   </nav>
 </header>
 
@@ -342,7 +362,7 @@
       <h1>Tu familia, <span class="accent">organizada sin caos</span></h1>
       <p class="lede">Kora organiza la vida familiar y reparte lo que hay que hacer entre toda la casa, para que nada se olvide y la carga mental no recaiga siempre en la misma persona.</p>
       <div class="hero-cta">
-        <a class="btn btn-butter" href="#cta">Empezar gratis</a>
+        <a class="btn btn-butter" href="#" data-open-modal="waitlist">Empezar gratis</a>
         <a class="btn btn-outline" href="#funciona">Ver cómo funciona ↓</a>
       </div>
     </div>
@@ -540,13 +560,22 @@
   <div class="cta-final">
     <h2>Empieza a organizar tu familia hoy</h2>
     <p>Gratis para empezar. Sin tarjeta. Toda la familia en cinco minutos.</p>
-    <form id="waitlist-form" class="form-row" novalidate>
-      <input type="email" name="email" required placeholder="tu@email.com" aria-label="Tu email">
-      <button type="submit" class="btn btn-butter">Unirme a la lista</button>
-    </form>
-    <p class="form-msg" id="waitlist-msg" role="status" aria-live="polite"></p>
+    <div class="cta-row">
+      <a href="#" class="btn btn-butter" data-open-modal="waitlist">Unirme a la lista</a>
+    </div>
   </div>
 </section>
+
+<dialog id="waitlist-dialog" class="modal">
+  <button type="button" class="modal-close" id="waitlist-dialog-close" aria-label="Cerrar">✕</button>
+  <h2>Unite a la lista de espera</h2>
+  <p>Dejanos tu email y te avisamos apenas puedas entrar a Kora.</p>
+  <form id="waitlist-form" class="form-row" novalidate>
+    <input type="email" name="email" required placeholder="tu@email.com" aria-label="Tu email">
+    <button type="submit" class="btn btn-butter">Unirme a la lista</button>
+  </form>
+  <p class="form-msg" id="waitlist-msg" role="status" aria-live="polite"></p>
+</dialog>
 
 <footer>
   <div class="foot-row">
@@ -582,6 +611,38 @@
 })();
 </script>
 
+<script>
+(function(){
+  var dialogs = {};
+  document.querySelectorAll('dialog.modal').forEach(function(dialog){
+    var key = dialog.id.replace(/-dialog$/, '');
+    dialogs[key] = dialog;
+
+    var closeBtn = dialog.querySelector('.modal-close');
+    if(closeBtn) closeBtn.addEventListener('click', function(){ dialog.close(); });
+
+    dialog.addEventListener('click', function(e){
+      if(e.target === dialog) dialog.close();
+    });
+
+    dialog.addEventListener('close', function(){
+      var msg = dialog.querySelector('.form-msg');
+      var form = dialog.querySelector('form');
+      if(msg){ msg.textContent = ''; msg.className = 'form-msg'; }
+      if(form) form.reset();
+    });
+  });
+
+  document.querySelectorAll('[data-open-modal]').forEach(function(trigger){
+    trigger.addEventListener('click', function(e){
+      e.preventDefault();
+      var dialog = dialogs[trigger.getAttribute('data-open-modal')];
+      if(dialog) dialog.showModal();
+    });
+  });
+})();
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script>
@@ -605,6 +666,8 @@
           msg.textContent = '¡Gracias! Ya quedó registrado.';
           msg.className = 'form-msg ok';
           form.reset();
+          var dialog = form.closest('dialog.modal');
+          if(dialog) setTimeout(function(){ dialog.close(); }, 1400);
         })
         .catch(function(){
           msg.textContent = 'Algo salió mal. Probá de nuevo en un momento.';
