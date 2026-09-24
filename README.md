@@ -16,3 +16,4 @@ Inicialmente pensé en un herramienta de trabajo colaborativo laboral y poco a p
 
 al final le entendí que es como un repositorio de tareas que se le asignan responsables (no se bajo que criterio) de las labores del hogar y en algún punto conecta con flujo de compras de alimentos y recetas para la alimentación de todos
 
+Entendio calendario y lista de tareas familiar
